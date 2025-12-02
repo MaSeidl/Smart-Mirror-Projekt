@@ -73,9 +73,9 @@ void loop() {
 
   // --- Ausgabe ---
   Serial.println("---- Wetterdaten ----");
-  Serial.print("Temp: "); Serial.print(temp); Serial.println(" °C");
-  Serial.print("Humidity: "); Serial.print(hum); Serial.println(" %");
-  Serial.print("Pressure: "); Serial.print(pres); Serial.println(" hPa");
+  Serial.print("Temperatur: "); Serial.print(temp); Serial.println(" °C");
+  Serial.print("Luftfeuchtigkeit: "); Serial.print(hum); Serial.println(" %");
+  Serial.print("Luftdruck: "); Serial.print(pres); Serial.println(" hPa");
   Serial.print("Wind Voltage: "); Serial.print(vSensor, 3); Serial.print(" V");
   Serial.print("  -> Wind Speed: "); Serial.print(windSpeed, 2); Serial.println(" m/s");
   Serial.print("Rain tips (letzter Zyklus): "); Serial.println(rainTips);
@@ -83,5 +83,6 @@ void loop() {
 
   delay(2000);
 }
+
 
 
