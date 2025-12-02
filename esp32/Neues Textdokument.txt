@@ -7,8 +7,8 @@
 #include <WiFi.h>
 
 // --- Konfiguration ---
-const char* WIFI_SSID = "DeinWLAN";       // <-- anpassen
-const char* WIFI_PASSWORD = "DeinPW";     // <-- anpassen
+const char* WIFI_SSID = "WLAN";       // <-- anpassen
+const char* WIFI_PASSWORD = "PW";     // <-- anpassen
 
 // BME280
 Adafruit_BME280 bme;
@@ -83,3 +83,4 @@ void loop() {
 
   delay(2000);
 }
+
