@@ -1,0 +1,4 @@
+node_modules/
+raspberry-pi/MagicMirror/node_modules/
+raspberry-pi/MagicMirror/modules/*/node_modules/
+npm-debug.log

@@ -1,0 +1,10 @@
+{
+	"apps": [
+		{
+			"name": "MagicMirror",
+			"cwd": "/home/softwareraspi",
+			"script": "/home/softwareraspi/MagicMirror/installers/mm.sh",
+			"watch": ["/home/softwareraspi/MagicMirror/config/config.js"]
+		}
+	]
+}
