@@ -1,0 +1,89 @@
+// --- Testcode ---
+// --- Bibliotheken ---
+#include <Arduino.h>
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
+#include <WiFi.h>
+
+// --- Konfiguration ---
+const char* WIFI_SSID = "WLAN";       // <-- anpassen
+const char* WIFI_PASSWORD = "PW";     // <-- anpassen
+
+// BME280
+Adafruit_BME280 bme;
+
+// Pins
+const int windPin = 34;     // ADC, Spannungsteiler
+const int rainPin = 27;     // digitaler Eingang für Regenmesser (Reed)
+
+// Kalibrierung Windsensor
+const float windVoltMax = 3.8;      // max Sensorspannung
+const float windVoltTeilerMax = windVoltMax * 0.5; // wegen 2×100k in Serie
+const float windMaxSpeed = 30.0;    // Max Windgeschwindigkeit, z.B. 30 m/s — anpassen
+
+volatile unsigned int rainCount = 0;
+
+// Interrupt-Routine bei Regen‑Impuls / Reed‑Switch
+void IRAM_ATTR handleRain() {
+  rainCount++;
+}
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin(21, 22);
+
+  // BME280 init
+  if (!bme.begin(0x77)) {
+    Serial.println("BME280 nicht gefunden!");
+    while (1) { delay(1000); }
+  }
+
+  // Regen‑Sensor Pin
+  pinMode(rainPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(rainPin), handleRain, FALLING);
+
+  // WLAN-Verbindung
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Connecting to WiFi ");
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println();
+  Serial.print("Connected. IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+void loop() {
+  // --- BME280 Daten ---
+  float temp = bbe.readTemperature();
+  float hum  = bme.readHumidity();
+  float pres = bme.readPressure() / 100.0F;
+
+  // --- Wind messen ---
+  int raw = analogRead(windPin);
+  float vAdc = (raw / 4095.0) * 3.3;           // Spannung am ADC‑Pin
+  float vSensor = vAdc * 2.0;                  // wegen Spannungsteiler (2×100k in Serie)
+  float windSpeed = (vSensor / windVoltMax) * windMaxSpeed;
+
+  // --- Regen zählen ---
+  unsigned int rainTips = rainCount;
+  rainCount = 0;  // danach zurücksetzen für nächste Periode
+
+  // --- Ausgabe ---
+  Serial.println("---- Wetterdaten ----");
+  Serial.print("Temperatur: "); Serial.print(temp); Serial.println(" °C");
+  Serial.print("Luftfeuchtigkeit: "); Serial.print(hum); Serial.println(" %");
+  Serial.print("Luftdruck: "); Serial.print(pres); Serial.println(" hPa");
+  Serial.print("Wind Voltage: "); Serial.print(vSensor, 3); Serial.print(" V");
+  Serial.print("  -> Wind Speed: "); Serial.print(windSpeed, 2); Serial.println(" m/s");
+  Serial.print("Rain tips (letzter Zyklus): "); Serial.println(rainTips);
+  Serial.println("----------------------\n");
+
+  delay(2000);
+}
+
+
+
+
