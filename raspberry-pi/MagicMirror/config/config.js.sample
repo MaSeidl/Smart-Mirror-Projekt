@@ -144,41 +144,48 @@ let config = {
 
            			 topic: "BSZAM/Wetterstation/Systemstatus",
 
-           			 label: "Systemstatus"
+           			 label: "Systemstatus",
 				 
        			 },
 				 {
 					topic: "BSZAM/Wetterstation/Windstaerke",
 
-					label: "Windstaerke"
+					label: "Windstaerke",
 
 					valueFormat: "## km/h"
 
-				 }
+				 },
 				 {
 					topic: "BSZAM/Wetterstation/Luftfeuchtigkeit",
 
-					label: "Luftfeuchtigkeit"
+					label: "Luftfeuchtigkeit",
 
 					valueFormat: "## %"
 
-				 }
+				 },
 				 {
 					topic: "BSZAM/Wetterstation/Windrichtung",
 
-					label: "Windrindrichtung"
+					label: "Windrindrichtung",
 
 					valueFormat: "##"
 
-				 }
+				 },
 				 {
 					topic: "BSZAM/Wetterstation/Regen",
 
-					label: "Regen"
+					label: "Regen",
 
 					valueFormat: "## l"
 
-				 }
+				 },
+				 {
+					topic: "BSZAM/System/coffee",
+
+					payload: "☕ dringend erforderlich",
+
+
+				 },
 
         ]
 
