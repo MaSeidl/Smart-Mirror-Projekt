@@ -27,8 +27,8 @@ let config = {
 	httpsPrivateKey: "",	// HTTPS private key path, only require when useHttps is true
 	httpsCertificate: "",	// HTTPS Certificate path, only require when useHttps is true
 
-	language: "en",
-	locale: "en-US",   // this variable is provided as a consistent location
+	language: "de",
+	locale: "de-DE",   // this variable is provided as a consistent location
 			   // it is currently only used by 3rd party modules. no MagicMirror code uses this value
 			   // as we have no usage, we  have no constraints on what this field holds
 			   // see https://en.wikipedia.org/wiki/Locale_(computer_software) for the possibilities
@@ -70,16 +70,6 @@ let config = {
 		{
 			module: "weather",
 			position: "top_right",
-			config: {
-				weatherProvider: "openmeteo",
-				type: "current",
-				lat: 40.776676,
-				lon: -73.971321
-			}
-		},
-		{
-			module: "weather",
-			position: "top_right",
 			header: "Weather Forecast",
 			config: {
 				weatherProvider: "openmeteo",
@@ -94,8 +84,8 @@ let config = {
 			config: {
 				feeds: [
 					{
-						title: "New York Times",
-						url: "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml"
+						title: "Tagesschau",
+						url: "https://www.tagesschau.de/infoservices/alle-meldungen-100~rss2.xml"
 					}
 				],
 				showSourceTitle: true,
@@ -104,100 +94,6 @@ let config = {
 				broadcastNewsUpdates: true
 			}
 		},
-		{
-
-  			module: "MMM-MQTT",
-
-  			position: "top_left",
-
-  				config: {
-
-    			mqttServers: [
-
-      			{
-
-        		address: "192.168.1.50",
-        		port: 1883,
-        		subscriptions: [
-
-         		 {
-
-           			 topic: "BSZAM/Wetterstation/Temperatur",
-
-           			label: "Temperatur",
-
-           			 valueFormat: "## °C"
-
-         		 },
-
-         		 {
-
-            		topic: "BSZAM/Wetterstation/Luftdruck",
-
-            		label: "Luftdruck",
-
-            		valueFormat: "## %"
-
-        		  },
-
-         		 {
-
-           			 topic: "BSZAM/Wetterstation/Systemstatus",
-
-           			 label: "Systemstatus",
-				 
-       			 },
-				 {
-					topic: "BSZAM/Wetterstation/Windstaerke",
-
-					label: "Windstaerke",
-
-					valueFormat: "## km/h"
-
-				 },
-				 {
-					topic: "BSZAM/Wetterstation/Luftfeuchtigkeit",
-
-					label: "Luftfeuchtigkeit",
-
-					valueFormat: "## %"
-
-				 },
-				 {
-					topic: "BSZAM/Wetterstation/Windrichtung",
-
-					label: "Windrindrichtung",
-
-					valueFormat: "##"
-
-				 },
-				 {
-					topic: "BSZAM/Wetterstation/Regen",
-
-					label: "Regen",
-
-					valueFormat: "## l"
-
-				 },
-				 {
-					topic: "BSZAM/System/coffee",
-
-					payload: "☕ dringend erforderlich",
-
-
-				 },
-
-        ]
-
-      }
-
-    ]
-
-  }
-
-}
-
- 
 	]
 };
 

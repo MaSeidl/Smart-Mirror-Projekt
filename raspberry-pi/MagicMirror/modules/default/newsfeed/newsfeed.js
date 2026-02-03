@@ -3,8 +3,8 @@ Module.register("newsfeed", {
 	defaults: {
 		feeds: [
 			{
-				title: "Spiegel",
-				url: "https://www.spiegel.de/schlagzeilen/tops/index.rss",
+				title: "Tagesschau",
+				url: "https://www.tagesschau.de/infoservices/alle-meldungen-100~rss2.xml",
 				encoding: "UTF-8" //ISO-8859-1
 			}
 		],
