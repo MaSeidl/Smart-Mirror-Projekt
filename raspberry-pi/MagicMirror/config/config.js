@@ -94,6 +94,93 @@ let config = {
 				broadcastNewsUpdates: true
 			}
 		},
+				{
+
+  			module: "MMM-MQTT",
+
+  			position: "top_mid",
+
+  				config: {
+
+    			mqttServers: [
+
+      			{
+
+        		address: "192.168.1.50",
+        		port: 1883,
+        		subscriptions: [
+
+         		 {
+
+           			 topic: "BSZAM/Wetterstation/Temperatur",
+
+           			label: "Temperatur",
+
+           			 valueFormat: "## °C",
+
+         		 },
+
+         		 {
+
+            		topic: "BSZAM/Wetterstation/Luftdruck",
+
+            		label: "Luftdruck",
+
+            		valueFormat: "## %",
+
+        		  },
+
+         		 {
+
+           			 topic: "BSZAM/Wetterstation/Systemstatus",
+
+           			 label: "Systemstatus",
+				 
+       			 },
+				 {
+					topic: "BSZAM/Wetterstation/Windstaerke",
+
+					label: "Windstaerke",
+
+					valueFormat: "## km/h",
+
+				 }
+				 {
+					topic: "BSZAM/Wetterstation/Luftfeuchtigkeit",
+
+					label: "Luftfeuchtigkeit",
+
+					valueFormat: "## %",
+
+				 }
+				 {
+					topic: "BSZAM/Wetterstation/Windrichtung",
+
+					label: "Windrindrichtung",
+
+					valueFormat: "##",
+
+				 }
+				 {
+					topic: "BSZAM/Wetterstation/Regen",
+
+					label: "Regen",
+
+					valueFormat: "## l",
+
+				 }
+
+        ]
+
+      }
+
+    ]
+
+  }
+
+}
+
+ 
 	]
 };
 
