@@ -9,7 +9,7 @@
  * see https://docs.magicmirror.builders/configuration/introduction.html#enviromnent-variables
  */
 let config = {
-	address: "0.0.0.0",	// Address to listen on, can be:
+	address: "127.0.0.1",	// Address to listen on, can be:
 							// - "localhost", "127.0.0.1", "::1" to listen on loopback interface
 							// - another specific IPv4/6 to listen on a specific interface
 							// - "0.0.0.0", "::" to listen on any interface
@@ -98,16 +98,15 @@ let config = {
 
   			module: "MMM-MQTT",
 
-  			position: "top_mid",
+  			position: "top_middle",
 
   				config: {
 
-    			mqttServers: [
-
+    			mqttServers: "mqtt://localhost",[
+				mqttPort: 1883,
+				
       			{
 
-        		address: "192.168.1.50",
-        		port: 1883,
         		subscriptions: [
 
          		 {
@@ -116,7 +115,7 @@ let config = {
 
            			label: "Temperatur",
 
-           			 valueFormat: "## °C",
+           			 valueFormat: "## °C"
 
          		 },
 
@@ -126,7 +125,7 @@ let config = {
 
             		label: "Luftdruck",
 
-            		valueFormat: "## %",
+            		valueFormat: "## %"
 
         		  },
 
@@ -142,33 +141,33 @@ let config = {
 
 					label: "Windstaerke",
 
-					valueFormat: "## km/h",
+					valueFormat: "## km/h"
 
-				 }
+				 },
 				 {
 					topic: "BSZAM/Wetterstation/Luftfeuchtigkeit",
 
 					label: "Luftfeuchtigkeit",
 
-					valueFormat: "## %",
+					valueFormat: "## %"
 
-				 }
+				 },
 				 {
 					topic: "BSZAM/Wetterstation/Windrichtung",
 
 					label: "Windrindrichtung",
 
-					valueFormat: "##",
+					valueFormat: "##"
 
-				 }
+				 },
 				 {
 					topic: "BSZAM/Wetterstation/Regen",
 
 					label: "Regen",
 
-					valueFormat: "## l",
+					valueFormat: "## l"
 
-				 }
+				 },
 
         ]
 
@@ -178,10 +177,6 @@ let config = {
 
   }
 
-}
-
- 
-	]
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
