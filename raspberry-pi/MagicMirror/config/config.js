@@ -56,9 +56,8 @@ let config = {
 			config: {
 				calendars: [
 					{
-						fetchInterval: 7 * 24 * 60 * 60 * 1000,
-						symbol: "calendar-check",
-						url: "https://ics.calendarlabs.com/76/mm3137/US_Holidays.ics"
+						url: "https://calendar.google.com/calendar/ical/de.german%23holiday%40group.v.calender.google.com/public/basic.ics",
+						symbol: "calendar"
 					}
 				]
 			}
@@ -155,7 +154,7 @@ let config = {
 				 {
 					topic: "BSZAM/Wetterstation/Windrichtung",
 
-					label: "Windrindrichtung",
+					label: "Windrichtung",
 
 					valueFormat: "##"
 
