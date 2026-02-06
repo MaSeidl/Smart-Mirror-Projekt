@@ -14,7 +14,7 @@ let config = {
 							// - another specific IPv4/6 to listen on a specific interface
 							// - "0.0.0.0", "::" to listen on any interface
 							// Default, when address config is left out or empty, is "localhost"
-	port: 8080,1883,
+	port: 8080,
 	basePath: "/",	// The URL path where MagicMirror² is hosted. If you are using a Reverse proxy
 									// you must set the sub path here. basePath must end with a /
 	ipWhitelist: [],	// Set [] to allow all IP addresses
@@ -56,7 +56,7 @@ let config = {
 			config: {
 				calendars: [
 					{
-						url: "https://calendar.google.com/calendar/ical/de.german%23holiday%40group.v.calender.google.com/public/basic.ics",
+						url: "https://calendar.google.com/calendar/ical/de.german%23holiday%40group.v.calendar.google.com/public/basic.ics",
 						symbol: "calendar"
 					}
 				]
@@ -176,6 +176,8 @@ let config = {
 
   }
 
+}
+]
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
