@@ -1,39 +1,15 @@
-/* Config Sample
- *
- * For more information on how you can configure this file
- * see https://docs.magicmirror.builders/configuration/introduction.html
- * and https://docs.magicmirror.builders/modules/configuration.html
- *
- * You can use environment variables using a `config.js.template` file instead of `config.js`
- * which will be converted to `config.js` while starting. For more information
- * see https://docs.magicmirror.builders/configuration/introduction.html#enviromnent-variables
- */
+
 let config = {
-	address: "127.0.0.1",	// Address to listen on, can be:
-							// - "localhost", "127.0.0.1", "::1" to listen on loopback interface
-							// - another specific IPv4/6 to listen on a specific interface
-							// - "0.0.0.0", "::" to listen on any interface
-							// Default, when address config is left out or empty, is "localhost"
+	address: "127.0.0.1",
 	port: 8080,
-	basePath: "/",	// The URL path where MagicMirror² is hosted. If you are using a Reverse proxy
-									// you must set the sub path here. basePath must end with a /
-	ipWhitelist: [127.0.0.1],	// Set [] to allow all IP addresses
-									// or add a specific IPv4 of 192.168.1.5 :
-									// ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.1.5"],
-									// or IPv4 range of 192.168.3.0 --> 192.168.3.15 use CIDR format :
-									// ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.3.0/28"],
+	basePath: "/",
+	ipWhitelist: [ "127.0.0.1" ],
 
-	useHttps: false,			// Support HTTPS or not, default "false" will use HTTP
-	httpsPrivateKey: "",	// HTTPS private key path, only require when useHttps is true
-	httpsCertificate: "",	// HTTPS Certificate path, only require when useHttps is true
-
+	useHttps: false,
 	language: "de",
-	locale: "de-DE",   // this variable is provided as a consistent location
-			   // it is currently only used by 3rd party modules. no MagicMirror code uses this value
-			   // as we have no usage, we  have no constraints on what this field holds
-			   // see https://en.wikipedia.org/wiki/Locale_(computer_software) for the possibilities
+	locale: "de-DE",
 
-	logLevel: ["INFO", "LOG", "WARN", "ERROR"], // Add "DEBUG" for even more logging
+	logLevel: ["INFO", "LOG", "WARN", "ERROR"],
 	timeFormat: 24,
 	units: "metric",
 
@@ -88,102 +64,59 @@ let config = {
 					}
 				],
 				showSourceTitle: true,
-				showPublishDate: true,
-				broadcastNewsFeeds: true,
-				broadcastNewsUpdates: true
+				showPublishDate: true
 			}
 		},
-				{
 
+		/* 🔽🔽🔽 MMM-MQTT MODUL 🔽🔽🔽 */
+		{
+			module: "MMM-MQTT",
+			position: "top_middle",
+			config: {
+				mqttServers: [
 					{
-
-  			module: "MMM-MQTT",
-
-  			position: "top_mid",
-
-  				config: {
-
-    			mqttServers: [
-
-      			{
-
-        		address: "192.168.1.50",
-        		port: 1883,
-        		subscriptions: [
-
-         		 {
-
-           			 topic: "BSZAM/Wetterstation/Temperatur",
-
-           			label: "Temperatur",
-
-           			 valueFormat: "## °C",
-
-         		 },
-
-         		 {
-
-            		topic: "BSZAM/Wetterstation/Luftdruck",
-
-            		label: "Luftdruck",
-
-            		valueFormat: "## %",
-
-        		  },
-
-         		 {
-
-           			 topic: "BSZAM/Wetterstation/Systemstatus",
-
-           			 label: "Systemstatus",
-				 
-       			 },
-				 {
-					topic: "BSZAM/Wetterstation/Windstaerke",
-
-					label: "Windstaerke",
-
-					valueFormat: "## km/h",
-
-				 }
-				 {
-					topic: "BSZAM/Wetterstation/Luftfeuchtigkeit",
-
-					label: "Luftfeuchtigkeit",
-
-					valueFormat: "## %",
-
-				 }
-				 {
-					topic: "BSZAM/Wetterstation/Windrichtung",
-
-					label: "Windrindrichtung",
-
-					valueFormat: "##",
-
-				 }
-				 {
-					topic: "BSZAM/Wetterstation/Regen",
-
-					label: "Regen",
-
-					valueFormat: "## l",
-
-				 }
-
-        ]
-
-      }
-
-    ]
-
-  }
-
-}
-
- 
-
-]
+						address: "localhost",
+						port: 1883,
+						subscriptions: [
+							{
+								topic: "BSZAM/Wetterstation/Temperatur",
+								label: "Temperatur",
+								valueFormat: "## °C"
+							},
+							{
+								topic: "BSZAM/Wetterstation/Luftdruck",
+								label: "Luftdruck",
+								valueFormat: "## hPa"
+							},
+							{
+								topic: "BSZAM/Wetterstation/Luftfeuchtigkeit",
+								label: "Luftfeuchtigkeit",
+								valueFormat: "## %"
+							},
+							{
+								topic: "BSZAM/Wetterstation/Windstaerke",
+								label: "Windstärke",
+								valueFormat: "## km/h"
+							},
+							{
+								topic: "BSZAM/Wetterstation/Windrichtung",
+								label: "Windrichtung"
+							},
+							{
+								topic: "BSZAM/Wetterstation/Regen",
+								label: "Regen",
+								valueFormat: "## l"
+							},
+							{
+								topic: "BSZAM/Wetterstation/Systemstatus",
+								label: "Status"
+							}
+						]
+					}
+				]
+			}
+		}
+	]
 };
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
