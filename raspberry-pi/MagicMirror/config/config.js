@@ -93,6 +93,7 @@ let config = {
 				broadcastNewsUpdates: true
 			}
 		},
+				{
 
 					{
 
