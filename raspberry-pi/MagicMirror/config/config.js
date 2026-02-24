@@ -71,8 +71,9 @@ let config = {
 		/* 🔽🔽🔽 MMM-MQTT MODUL 🔽🔽🔽 */
 		{
 			module: "MMM-MQTT",
-			position: "top_middle",
+			position: "bottom_center",
 			config: {
+				debug: true,
 				mqttServers: [
 					{
 						address: "localhost",
@@ -81,35 +82,44 @@ let config = {
 							{
 								topic: "BSZAM/Wetterstation/Temperatur",
 								label: "Temperatur",
-								valueFormat: "## °C"
+								suffix: "°C",
+								decimals: 1
 							},
 							{
 								topic: "BSZAM/Wetterstation/Luftdruck",
 								label: "Luftdruck",
-								valueFormat: "## hPa"
+								suffix: "hPa",
+								decimals: 1
 							},
 							{
 								topic: "BSZAM/Wetterstation/Luftfeuchtigkeit",
 								label: "Luftfeuchtigkeit",
-								valueFormat: "## %"
+								suffix: "%",
+								decimals: 1
 							},
 							{
 								topic: "BSZAM/Wetterstation/Windstaerke",
 								label: "Windstärke",
-								valueFormat: "## km/h"
+								suffix: "km/h",
+								decimals: 1
 							},
 							{
 								topic: "BSZAM/Wetterstation/Windrichtung",
-								label: "Windrichtung"
+								label: "Windrichtung",
+								suffix: "Südosten",
+								decimals: 1
 							},
 							{
 								topic: "BSZAM/Wetterstation/Regen",
 								label: "Regen",
-								valueFormat: "## l"
+								suffix: "l",
+								decimals: 1
 							},
 							{
 								topic: "BSZAM/Wetterstation/Systemstatus",
-								label: "Status"
+								label: "Status",
+								suffix: "Läuft",
+								decimals: 1
 							}
 						]
 					}
@@ -118,6 +128,7 @@ let config = {
 		}
 	]
 };
+
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== "undefined") { module.exports = config; }
