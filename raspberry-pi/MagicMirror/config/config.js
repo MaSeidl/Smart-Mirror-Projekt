@@ -67,18 +67,10 @@ let config = {
 				showPublishDate: true
 			}
 		},
-		{
-			module: "alert",
-			position: "top_bar",
-			config: {
-				message: ">> SYSTEM INITIALISIERUNG ... OK",
-				title: "MAGIC MIRROR",
-				timer: 8000
-			}
-		},
+		
 		{ 
 			module: "MMM-WebView",
-				position: "bottom_center",
+				position: "top_bar",
 			config: { 
 				url: "https://www.bszam.de/aktuelle-nachrichten.html",
 				width: "900px",
