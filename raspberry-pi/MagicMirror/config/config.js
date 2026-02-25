@@ -76,7 +76,16 @@ let config = {
 				timer: 8000
 			}
 		},
-
+		{ 
+			module: "MMM-WebView",
+				position: "bottom_center",
+			config: { 
+				url: "https://www.bszam.de/aktuelle-nachrichten.html",
+				width: "900px",
+				height: "320px"
+			}
+		},
+		
 		/* 🔽🔽🔽 MMM-MQTT MODUL 🔽🔽🔽 */
 		{
 			module: "MMM-MQTT",
@@ -112,12 +121,12 @@ let config = {
 								suffix: "km/h",
 								decimals: 1
 							},
-							{
+							/*{
 								topic: "BSZAM/Wetterstation/Windrichtung",
 								label: "Windrichtung",
 								suffix: "Südosten",
 								decimals: 1
-							},
+							},*/
 							{
 								topic: "BSZAM/Wetterstation/Regen",
 								label: "Regen",
