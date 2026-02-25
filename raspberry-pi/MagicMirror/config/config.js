@@ -68,16 +68,6 @@ let config = {
 			}
 		},
 		
-		{ 
-			module: "MMM-WebView",
-				position: "top_bar",
-			config: { 
-				url: "https://www.bszam.de/aktuelle-nachrichten.html",
-				width: "900px",
-				height: "320px"
-			}
-		},
-		
 		/* 🔽🔽🔽 MMM-MQTT MODUL 🔽🔽🔽 */
 		{
 			module: "MMM-MQTT",
