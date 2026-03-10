@@ -9,7 +9,7 @@
  * see https://docs.magicmirror.builders/configuration/introduction.html#enviromnent-variables
  */
 let config = {
-	address: "localhost",	// Address to listen on, can be:
+	address: "0.0.0.0",	// Address to listen on, can be:
 							// - "localhost", "127.0.0.1", "::1" to listen on loopback interface
 							// - another specific IPv4/6 to listen on a specific interface
 							// - "0.0.0.0", "::" to listen on any interface
@@ -27,8 +27,8 @@ let config = {
 	httpsPrivateKey: "",	// HTTPS private key path, only require when useHttps is true
 	httpsCertificate: "",	// HTTPS Certificate path, only require when useHttps is true
 
-	language: "de",
-	locale: "de-DE",   // this variable is provided as a consistent location
+	language: "en",
+	locale: "en-US",   // this variable is provided as a consistent location
 			   // it is currently only used by 3rd party modules. no MagicMirror code uses this value
 			   // as we have no usage, we  have no constraints on what this field holds
 			   // see https://en.wikipedia.org/wiki/Locale_(computer_software) for the possibilities
@@ -41,8 +41,8 @@ let config = {
 		{
 			module: "alert",
 		},
-			
-		{	module: "updatenotification",
+		{
+			module: "updatenotification",
 			position: "top_bar"
 		},
 		{
@@ -68,19 +68,13 @@ let config = {
 			position: "lower_third"
 		},
 		{
-			module: "newsfeed",
-			position: "bottom_bar",
+			module: "weather",
+			position: "top_right",
 			config: {
-				feeds: [
-					{
-						title: "Tagesschau",
-						url: "https://www.tagesschau.de/infoservices/alle-meldungen-100~rss2.xml"
-					}
-				],
-				showSourceTitle: true,
-				showPublishDate: true,
-				broadcastNewsFeeds: true,
-				broadcastNewsUpdates: true
+				weatherProvider: "openmeteo",
+				type: "current",
+				lat: 40.776676,
+				lon: -73.971321
 			}
 		},
 		{
@@ -94,7 +88,44 @@ let config = {
 				lon: -73.971321
 			}
 		},
-    		
+		{
+			module: "newsfeed",
+			position: "bottom_bar",
+			config: {
+				feeds: [
+					{
+						title: "Tagesschau",
+						url: "https://www.tagesschau.de/index~rss2.xml"
+					}
+				],
+				showSourceTitle: true,
+				showPublishDate: true,
+				broadcastNewsFeeds: true,
+				broadcastNewsUpdates: true
+			}
+		},
+		{
+		    module: 'MMM-Remote-Control',
+		    position: 'bottom_left', // Required to show URL/QR code on mirror
+		    // you can hide this module afterwards from the remote control itself
+		    config: {
+			customCommand: {},  // Optional, See "Using Custom Commands" below
+			showModuleApiMenu: true, // Optional, Enable the Module Controls menu
+			secureEndpoints: false, // Optional, See API/README.md
+			// uncomment any of the lines below if you're gonna use it
+			// customMenu: "custom_menu.json", // Optional, See "Custom Menu Items" below
+			// apiKey: "", // Optional, See API/README.md for details
+			// classes: {}, // Optional, See "Custom Classes" below
+
+			// QR Code options (new!)
+			 showQRCode: true, // Optional, display QR code for easy mobile access (default: true)
+			 qrCodeSize: 150, // Optional, size of QR code in pixels (default: 150)
+			// qrCodePosition: "below" // Optional:
+			//   "below" - Show URL above, QR code below (default)
+			//   "above" - Show QR code above, URL below
+			//   "replace" - Show only QR code, no URL text
+		 }
+		},
 	]
 };
 
