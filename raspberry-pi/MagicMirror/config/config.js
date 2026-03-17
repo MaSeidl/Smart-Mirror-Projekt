@@ -1,12 +1,9 @@
 
 let config = {
-	address: "0.0.0.0",
+	address: "127.0.0.1",
 	port: 8080,
 	basePath: "/",
-	ipWhitelist: [ "127.0.0.1",
-				  "::1",
-				  "127.16.8.0/24"
-				 ],
+	ipWhitelist: [ "127.0.0.1" ],
 
 	useHttps: false,
 	language: "de",
