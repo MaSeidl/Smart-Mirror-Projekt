@@ -101,25 +101,25 @@ let config = {
 						subscriptions: [
 							{
 								topic: "BSZAM/Wetterstation/Temperatur",
-								label: "Temperatur",
+								label: "Temperatur: ",
 								suffix: "°C",
 								decimals: 1
 							},
 							{
 								topic: "BSZAM/Wetterstation/Luftdruck",
-								label: "Luftdruck",
+								label: "Luftdruck: ",
 								suffix: "hPa",
 								decimals: 1
 							},
 							{
 								topic: "BSZAM/Wetterstation/Luftfeuchtigkeit",
-								label: "Luftfeuchtigkeit",
+								label: "Luftfeuchtigkeit: ",
 								suffix: "%",
 								decimals: 1
 							},
 							{
-								topic: "BSZAM/Wetterstation/Windstaerke",
-								label: "Windstärke",
+								topic: "BSZAM/Wetterstation/Windgeschwindigkeit",
+								label: "Windgeschwindigkeit: ",
 								suffix: "km/h",
 								decimals: 1
 							},
@@ -131,14 +131,14 @@ let config = {
 							},*/
 							{
 								topic: "BSZAM/Wetterstation/Regen",
-								label: "Regen",
+								label: "Regen: ",
 								suffix: "l",
 								decimals: 1
 							},
 							{
 								topic: "BSZAM/Wetterstation/Systemstatus",
-								label: "Status",
-								suffix: "Läuft",
+								label: "Status: ",
+								suffix: "Läuft = 1, Läuft nicht = 0",
 								decimals: 1
 							}
 						]
