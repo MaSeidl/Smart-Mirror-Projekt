@@ -67,6 +67,26 @@ let config = {
 				showPublishDate: true
 			}
 		},
+				/* MMM-Remote-Control */
+
+		{
+		module: "MMM-Remote-Control",
+		config: {
+			secureEndpoints: false,
+			customCommand: {},
+			}
+		},
+
+
+		/* QR-Code */
+		{
+ 		 module: "MMM-QRCode",
+ 		 position: "bottom_left",  // oder andere freie Position
+  			config: {
+   				 text: "http://172.16.8.8/remote.html",
+   				 size: 180
+ 				 }
+		},
 		
 		/* 🔽🔽🔽 MMM-MQTT MODUL 🔽🔽🔽 */
 		{
