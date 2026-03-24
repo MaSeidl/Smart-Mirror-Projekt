@@ -42,31 +42,42 @@ let config = {
 			module: "compliments",
 			position: "lower_third"
 		},
-		{
+
+    		{
 			module: "weather",
 			position: "top_right",
 			header: "Weather Forecast",
 			config: {
 				weatherProvider: "openmeteo",
+				lang: "de",
+				units: "metric",
 				type: "forecast",
-				lat: 40.776676,
-				lon: -73.971321
+				lat: 49.44,
+				lon: 11.88
 			}
 		},
-		{
-			module: "newsfeed",
-			position: "bottom_bar",
-			config: {
-				feeds: [
-					{
-						title: "Tagesschau",
-						url: "https://www.tagesschau.de/infoservices/alle-meldungen-100~rss2.xml"
-					}
-				],
-				showSourceTitle: true,
-				showPublishDate: true
-			}
+	
+			{
+		  module: "MMM-MotionDetector",
+		  position: "top_left",
+		  config: {
+		    device: "/dev/video0",
+		    captureIntervalTime: 1000,
+		    threshold: 1500,
+		    scoreThreshold: 20,
+		    timeout: 10000,
+		    turnOffDisplay: true,
+		    turnOnDisplay: true,
+		    displayCmd: {
+		      "on": "xset dpms force on",
+		      "off": "xset dpms force off"
+		    }
+		        //displayCommandOff: "xset dpms force off",   // für X11
+        		//displayCommandOn: "xset dpms force on",     // für X11
+			//keepDisplayOff: true
+		  }
 		},
+
 				/* MMM-Remote-Control */
 
 		{
