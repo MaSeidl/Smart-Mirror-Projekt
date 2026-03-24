@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "name": "MagicMirror",
+      "script": "npm",
+      "args": "start",
+      "cwd": "/home/pi/MagicMirror",
+      "watch": false
+    }
+  ]
+}
+	
