@@ -41,8 +41,8 @@ let config = {
 		{
 			module: "alert",
 		},
-			
-		{	module: "updatenotification",
+		{
+			module: "updatenotification",
 			position: "top_bar"
 		},
 		{
@@ -68,6 +68,17 @@ let config = {
 			position: "lower_third"
 		},
 		{
+			module: "weather",
+			position: "top_right",
+			header: "Weather Forecast",
+			config: {
+				weatherProvider: "openmeteo",
+				type: "forecast",
+				lat: 40.776676,
+				lon: -73.971321
+			}
+		},
+		{
 			module: "newsfeed",
 			position: "bottom_bar",
 			config: {
@@ -83,18 +94,6 @@ let config = {
 				broadcastNewsUpdates: true
 			}
 		},
-		{
-			module: "weather",
-			position: "top_right",
-			header: "Weather Forecast",
-			config: {
-				weatherProvider: "openmeteo",
-				type: "forecast",
-				lat: 40.776676,
-				lon: -73.971321
-			}
-		},
-    		
 	]
 };
 
