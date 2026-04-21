@@ -1,39 +1,15 @@
-/* Config Sample
- *
- * For more information on how you can configure this file
- * see https://docs.magicmirror.builders/configuration/introduction.html
- * and https://docs.magicmirror.builders/modules/configuration.html
- *
- * You can use environment variables using a `config.js.template` file instead of `config.js`
- * which will be converted to `config.js` while starting. For more information
- * see https://docs.magicmirror.builders/configuration/introduction.html#enviromnent-variables
- */
+
 let config = {
-	address: "localhost",	// Address to listen on, can be:
-							// - "localhost", "127.0.0.1", "::1" to listen on loopback interface
-							// - another specific IPv4/6 to listen on a specific interface
-							// - "0.0.0.0", "::" to listen on any interface
-							// Default, when address config is left out or empty, is "localhost"
+	address: "127.0.0.1",
 	port: 8080,
-	basePath: "/",	// The URL path where MagicMirror² is hosted. If you are using a Reverse proxy
-									// you must set the sub path here. basePath must end with a /
-	ipWhitelist: ["127.0.0.1", "::ffff:127.0.0.1", "::1"],	// Set [] to allow all IP addresses
-									// or add a specific IPv4 of 192.168.1.5 :
-									// ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.1.5"],
-									// or IPv4 range of 192.168.3.0 --> 192.168.3.15 use CIDR format :
-									// ["127.0.0.1", "::ffff:127.0.0.1", "::1", "::ffff:192.168.3.0/28"],
+	basePath: "/",
+	ipWhitelist: [ "127.0.0.1" ],
 
-	useHttps: false,			// Support HTTPS or not, default "false" will use HTTP
-	httpsPrivateKey: "",	// HTTPS private key path, only require when useHttps is true
-	httpsCertificate: "",	// HTTPS Certificate path, only require when useHttps is true
-
+	useHttps: false,
 	language: "de",
-	locale: "de-DE",   // this variable is provided as a consistent location
-			   // it is currently only used by 3rd party modules. no MagicMirror code uses this value
-			   // as we have no usage, we  have no constraints on what this field holds
-			   // see https://en.wikipedia.org/wiki/Locale_(computer_software) for the possibilities
+	locale: "de-DE",
 
-	logLevel: ["INFO", "LOG", "WARN", "ERROR"], // Add "DEBUG" for even more logging
+	logLevel: ["INFO", "LOG", "WARN", "ERROR"],
 	timeFormat: 24,
 	units: "metric",
 
@@ -47,6 +23,20 @@ let config = {
 		},
 		{
 			module: "clock",
+			position: "top_left"
+		},
+		{
+			module: "calendar",
+			header: "US Holidays",
+			position: "top_left",
+			config: {
+				calendars: [
+					{
+						url: "https://calendar.google.com/calendar/ical/de.german%23holiday%40group.v.calendar.google.com/public/basic.ics",
+						symbol: "calendar"
+					}
+				]
+			}
 			position: "lower_third"
 		},
 	
@@ -75,35 +65,124 @@ let config = {
 			module: "compliments",
 			position: "bottom_left"
 		},
-		{
+
+    		{
 			module: "weather",
 			position: "top_left",
 			header: "Weather Forecast",
 			config: {
 				weatherProvider: "openmeteo",
+				lang: "de",
+				units: "metric",
 				type: "forecast",
-				lat: 40.776676,
-				lon: -73.971321
+				lat: 49.44,
+				lon: 11.88
 			}
 		},
+	
+			{
+		  module: "MMM-MotionDetector",
+		  position: "top_left",
+		  config: {
+		    device: "/dev/video0",
+		    captureIntervalTime: 1000,
+		    threshold: 1500,
+		    scoreThreshold: 20,
+		    timeout: 10000,
+		    turnOffDisplay: true,
+		    turnOnDisplay: true,
+		    displayCmd: {
+		      "on": "xset dpms force on",
+		      "off": "xset dpms force off"
+		    }
+		        //displayCommandOff: "xset dpms force off",   // für X11
+        		//displayCommandOn: "xset dpms force on",     // für X11
+			//keepDisplayOff: true
+		  }
+		},
+
+				/* MMM-Remote-Control */
+
 		{
-			module: "newsfeed",
-			position: "bottom_bar",
-			config: {
-				feeds: [
-					{
-						title: "Tagesschau",
-						url: "https://www.tagesschau.de/infoservices/alle-meldungen-100~rss2.xml"
-					}
-				],
-				showSourceTitle: true,
-				showPublishDate: true,
-				broadcastNewsFeeds: true,
-				broadcastNewsUpdates: true
+		module: "MMM-Remote-Control",
+		config: {
+			secureEndpoints: false,
+			customCommand: {},
 			}
 		},
+
+
+		/* QR-Code */
+		{
+ 		 module: "MMM-QRCode",
+ 		 position: "bottom_left",  // oder andere freie Position
+  			config: {
+   				 text: "http://172.16.8.8/remote.html",
+   				 size: 180
+ 				 }
+		},
+		
+		/* 🔽🔽🔽 MMM-MQTT MODUL 🔽🔽🔽 */
+		{
+			module: "MMM-MQTT",
+			position: "bottom_center",
+			config: {
+				debug: true,
+				mqttServers: [
+					{
+						address: "localhost",
+						port: 1883,
+						subscriptions: [
+							{
+								topic: "BSZAM/Wetterstation/Temperatur",
+								label: "Temperatur: ",
+								suffix: "°C",
+								decimals: 1
+							},
+							{
+								topic: "BSZAM/Wetterstation/Luftdruck",
+								label: "Luftdruck: ",
+								suffix: "hPa",
+								decimals: 1
+							},
+							{
+								topic: "BSZAM/Wetterstation/Luftfeuchtigkeit",
+								label: "Luftfeuchtigkeit: ",
+								suffix: "%",
+								decimals: 1
+							},
+							{
+								topic: "BSZAM/Wetterstation/Windgeschwindigkeit",
+								label: "Windgeschwindigkeit: ",
+								suffix: "km/h",
+								decimals: 1
+							},
+							/*{
+								topic: "BSZAM/Wetterstation/Windrichtung",
+								label: "Windrichtung",
+								suffix: "Südosten",
+								decimals: 1
+							},*/
+							{
+								topic: "BSZAM/Wetterstation/Regen",
+								label: "Regen: ",
+								suffix: "l",
+								decimals: 1
+							},
+							{
+								topic: "BSZAM/Wetterstation/Systemstatus",
+								label: "Status: ",
+								suffix: "Läuft = 1, Läuft nicht = 0",
+								decimals: 1
+							}
+						]
+					}
+				]
+			}
+		}
 	]
 };
+
 
 /*************** DO NOT EDIT THE LINE BELOW ***************/
 if (typeof module !== "undefined") { module.exports = config; }

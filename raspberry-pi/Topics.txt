@@ -1,0 +1,8 @@
+Topics für die Kommunikation mit der Wetterstation:
+- BSZAM/Wetterstation/Luftfeuchtigkeit
+			Luftdruck
+			Temperatur
+			Windstärke
+			Windrichtung 
+			Regen
+			Systemstatus
