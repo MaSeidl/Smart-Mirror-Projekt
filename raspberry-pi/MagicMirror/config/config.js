@@ -47,29 +47,37 @@ let config = {
 		},
 		{
 			module: "clock",
-			position: "top_left"
+			position: "lower_third"
 		},
-		{
-			module: "calendar",
-			header: "US Holidays",
-			position: "top_left",
-			config: {
-				calendars: [
-					{
-						fetchInterval: 7 * 24 * 60 * 60 * 1000,
-						symbol: "calendar-check",
-						url: "https://ics.calendarlabs.com/76/mm3137/US_Holidays.ics"
-					}
-				]
-			}
-		},
+	
+{
+  module: "MMM-EmbedURL",
+  position: "top_right",
+  header: "Stundenplan",
+  config: {
+    updateInterval: 120,
+    embedElementType: "iframe",
+    attributes: [
+        "frameborder=0",
+	"width=750",
+	"height=500"
+    ],
+    embed: [
+        "http://bszam.webuntis.com/timetable/class?date=2026-04-13&entityId=5119"
+      
+    ]
+  },
+},
+ 
+
+
 		{
 			module: "compliments",
-			position: "lower_third"
+			position: "bottom_left"
 		},
 		{
 			module: "weather",
-			position: "top_right",
+			position: "top_left",
 			header: "Weather Forecast",
 			config: {
 				weatherProvider: "openmeteo",
