@@ -37,7 +37,6 @@ let config = {
 					}
 				]
 			}
-			position: "lower_third"
 		},
 	
 {
@@ -116,12 +115,25 @@ let config = {
 		{
  		 module: "MMM-QRCode",
  		 position: "bottom_left",  // oder andere freie Position
+		header: "Remote SmartMirror",
   			config: {
    				 text: "http://172.16.8.8/remote.html",
-   				 size: 180
+				showRaw:true ,
+   				 size: 60
  				 }
 		},
-		
+				/* QR-Code */
+		{
+ 		 module: "MMM-QRCode",
+ 		 position: "middle_center",  // oder andere freie Position
+		header: "LED Konfiguration",
+  			config: {
+   				 text: "http://172.16.8.200/",
+				showRaw:true ,
+   				 size: 180
+ 				 }
+		}, 
+
 		/* 🔽🔽🔽 MMM-MQTT MODUL 🔽🔽🔽 */
 		{
 			module: "MMM-MQTT",
