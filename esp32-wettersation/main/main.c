@@ -53,7 +53,7 @@
 #define TOPIC_HUM "BSZAM/Wetterstation/Luftfeuchtigkeit"
 #define TOPIC_RAIN "BSZAM/Wetterstation/Regen"
 #define TOPIC_WIND "BSZAM/Wetterstation/Windgeschwindigkeit"
-#define TOPIC_STATUS "BSZAM/Wetterstation/Status"
+#define TOPIC_STATUS "BSZAM/Wetterstation/Systemstatus"
 
 /* =========================================== */
 
