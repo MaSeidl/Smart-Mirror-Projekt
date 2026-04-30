@@ -53,6 +53,7 @@
 #define TOPIC_HUM "BSZAM/Wetterstation/Luftfeuchtigkeit"
 #define TOPIC_RAIN "BSZAM/Wetterstation/Regen"
 #define TOPIC_WIND "BSZAM/Wetterstation/Windgeschwindigkeit"
+#define TOPIC_STATUS "BSZAM/Wetterstation/Status"
 
 /* =========================================== */
 
@@ -111,9 +112,11 @@ static void mqtt_event_handler(void *handler_args,
     switch(event_id)
     {
         case MQTT_EVENT_CONNECTED:
-            mqtt_connected = true;
-            ESP_LOGI(TAG, "MQTT Verbindung zum Raspberry Pi hergestellt.");
-            break;
+    mqtt_connected = true;
+    ESP_LOGI(TAG, "MQTT Verbindung zum Raspberry Pi hergestellt.");
+
+    esp_mqtt_client_publish(client, TOPIC_STATUS, "1", 0, 1, 1);
+    break;
 
         case MQTT_EVENT_DISCONNECTED:
             mqtt_connected = false;
@@ -182,9 +185,15 @@ void mqtt_start()
 {
     ESP_LOGI(TAG, "Starte MQTT Verbindung zum Raspberry Pi...");
 
-    esp_mqtt_client_config_t mqtt_cfg = {
-        .broker.address.uri = MQTT_BROKER,
-    };
+  esp_mqtt_client_config_t mqtt_cfg = {
+    .broker.address.uri = MQTT_BROKER,
+
+    .session.last_will.topic = TOPIC_STATUS,
+    .session.last_will.msg = "0",
+    .session.last_will.msg_len = 1,
+    .session.last_will.qos = 1,
+    .session.last_will.retain = true,
+};
 
     client = esp_mqtt_client_init(&mqtt_cfg);
     if (client == NULL)
@@ -487,6 +496,9 @@ void app_main()
 
             snprintf(msg, sizeof(msg), "%.2f", wind_speed);
             esp_mqtt_client_publish(client, TOPIC_WIND, msg, 0, 1, 0);
+        
+            esp_mqtt_client_publish(client, TOPIC_STATUS, "1", 0, 1, 1);
+
         }
 
         vTaskDelay(pdMS_TO_TICKS(5000));
