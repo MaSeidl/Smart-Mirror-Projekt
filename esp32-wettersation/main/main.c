@@ -463,6 +463,9 @@ void bme_read(float *t, float *p, float *h)
 }
 
 /* ================= MAIN ================= */
+// Hauptprogramm:
+// Initialisiert alle Komponenten und liest anschließend regelmäßig Sensordaten aus,
+// die über MQTT an den Raspberry Pi gesendet werden
 
 void app_main()
 {
