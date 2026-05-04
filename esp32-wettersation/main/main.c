@@ -1,3 +1,6 @@
+// ================= BIBLIOTHEKEN =================
+
+// Standardbibliotheken für Berechnungen und Datentypen
 #include <stdio.h>
 #include <string.h>
 #include <inttypes.h>
@@ -5,49 +8,58 @@
 #include <time.h>
 #include <stdbool.h>
 
+// FreeRTOS (Betriebssystem des ESP32)
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+// ESP System (Logging, WLAN, Netzwerk)
 #include "esp_log.h"
 #include "esp_wifi.h"
 #include "esp_event.h"
 #include "esp_netif.h"
 #include "nvs_flash.h"
 
+// MQTT Kommunikation
 #include "mqtt_client.h"
 
+// Hardware-Treiber
 #include "driver/i2c_master.h"
 #include "driver/gpio.h"
-
 #include "esp_timer.h"
 #include "esp_sntp.h"
-
 #include "esp_adc/adc_oneshot.h"
 
-/* ================= CONFIG ================= */
+// ================= KONFIGURATION =================
 
+// WLAN Zugangsdaten
 #define WIFI_SSID "ArduinoWiFi"
 #define WIFI_PASS "2-bszam!"
+
+// MQTT Broker (Raspberry Pi)
 #define MQTT_BROKER "mqtt://172.16.8.13"
 
+// I²C Pins für Sensor
 #define SDA_PIN 4
 #define SCL_PIN 5
 
+// BME280 Adresse und Takt
 #define BME_ADDR 0x76
 #define I2C_FREQ 100000
 
+// Regensensor
 #define RAIN_GPIO 27
 #define RAIN_MM_PER_TIP 0.2794f
 
+// Höhe über Meeresspiegel für Luftdruckkorrektur
 #define ALTITUDE 380.0
 
 /* ===== Windsensor ===== */
 #define WIND_GPIO GPIO_NUM_2
 #define WIND_MAX_VOLTAGE 3.8f
 #define WIND_MAX_SPEED 32.4f
-#define WIND_DIVIDER_FACTOR 1.0f   /* ohne Spannungsteiler */
-/* später mit 2x10k: 2.0f */
+#define WIND_DIVIDER_FACTOR 1.0f   // Anpassung bei Spannungsteiler
 
+// MQTT Topics
 #define TOPIC_TEMP "BSZAM/Wetterstation/Temperatur"
 #define TOPIC_PRESS "BSZAM/Wetterstation/Luftdruck"
 #define TOPIC_HUM "BSZAM/Wetterstation/Luftfeuchtigkeit"
@@ -55,24 +67,28 @@
 #define TOPIC_WIND "BSZAM/Wetterstation/Windgeschwindigkeit"
 #define TOPIC_STATUS "BSZAM/Wetterstation/Systemstatus"
 
-/* =========================================== */
+// ================= GLOBALE VARIABLEN =================
 
 static const char *TAG = "WETTERSTATION";
 
 static esp_mqtt_client_handle_t client = NULL;
 static bool mqtt_connected = false;
 
+// I²C Bus + Gerät
 static i2c_master_bus_handle_t bus;
 static i2c_master_dev_handle_t dev;
 
+// ADC für Windsensor
 static adc_oneshot_unit_handle_t adc1_handle;
 static adc_unit_t wind_adc_unit;
 static adc_channel_t wind_adc_channel;
 static bool wind_adc_ready = false;
 
+// Regensensor (Interrupt-Zähler)
 volatile uint32_t rain_counter = 0;
 volatile int64_t last_interrupt_time = 0;
 
+// Hilfswert für BME Berechnung
 int32_t t_fine;
 
 /* ================= BME STRUCT ================= */
@@ -104,6 +120,7 @@ static bme_calib_t calib;
 
 /* ================= MQTT EVENT HANDLER ================= */
 
+// Wird bei MQTT Ereignissen aufgerufen
 static void mqtt_event_handler(void *handler_args,
                                esp_event_base_t base,
                                int32_t event_id,
@@ -115,6 +132,7 @@ static void mqtt_event_handler(void *handler_args,
     mqtt_connected = true;
     ESP_LOGI(TAG, "MQTT Verbindung zum Raspberry Pi hergestellt.");
 
+// Systemstatus senden
     esp_mqtt_client_publish(client, TOPIC_STATUS, "Ein", 0, 1, 1);
     break;
 
@@ -140,12 +158,14 @@ static void mqtt_event_handler(void *handler_args,
     }
 }
 
-/* ================= REGEN ISR ================= */
+// ================= REGEN SENSOR =================
 
+// Interrupt bei jedem Kippimpuls
 static void IRAM_ATTR rain_isr(void* arg)
 {
     int64_t now = esp_timer_get_time();
 
+    // Entprellung (50 ms)
     if (now - last_interrupt_time > 50000)
     {
         rain_counter++;
@@ -153,7 +173,7 @@ static void IRAM_ATTR rain_isr(void* arg)
     }
 }
 
-/* ================= WIFI ================= */
+// ================= WLAN =================
 
 void wifi_init()
 {
@@ -173,10 +193,10 @@ void wifi_init()
         }
     };
 
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA)); // Client-Modus
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
-    ESP_ERROR_CHECK(esp_wifi_start());
-    ESP_ERROR_CHECK(esp_wifi_connect());
+    ESP_ERROR_CHECK(esp_wifi_start()); // WLAN starten
+    ESP_ERROR_CHECK(esp_wifi_connect()); // verbinden
 }
 
 /* ================= MQTT ================= */
@@ -211,7 +231,7 @@ void mqtt_start()
 
     ESP_ERROR_CHECK(esp_mqtt_client_start(client));
 }
-
+// Reconnect falls Verbindung verloren
 void mqtt_check_reconnect()
 {
     if(client == NULL) return;
@@ -288,7 +308,7 @@ void wind_init()
     wind_adc_ready = true;
     ESP_LOGI(TAG, "Windsensor ADC bereit");
 }
-
+// Liest Windgeschwindigkeit
 float read_wind_speed()
 {
     if (!wind_adc_ready)
@@ -301,17 +321,22 @@ float read_wind_speed()
         ESP_LOGE(TAG, "Windsensor konnte nicht gelesen werden!");
         return 0.0f;
     }
-
+    // Umrechnung: ADC-Wert → Spannung (0 - 3.3V)
     float v_adc = ((float)raw / 4095.0f) * 3.3f;
     float v_sensor = v_adc * WIND_DIVIDER_FACTOR;
 
+    // Begrenzung auf gültigen Messbereich des Sensors
     if (v_sensor < 0.0f) v_sensor = 0.0f;
     if (v_sensor > WIND_MAX_VOLTAGE) v_sensor = WIND_MAX_VOLTAGE;
 
+     // Umrechnung: Spannung → Windgeschwindigkeit
+     // (je höher die Spannung, desto stärker der Wind)
     float wind_speed = (v_sensor / WIND_MAX_VOLTAGE) * WIND_MAX_SPEED;
 
+    // Sicherheitscheck (keine negativen Werte)
     if (wind_speed < 0.0f) wind_speed = 0.0f;
 
+    // Ergebnis zurückgeben (in m/s)
     return wind_speed;
 }
 
@@ -319,17 +344,26 @@ float read_wind_speed()
 
 void bme_init()
 {
+    // Einstellungen für den Sensor:
+    // Wie genau sollen Temperatur, Druck und Feuchte gemessen werden?
     uint8_t ctrl_hum[2]  = {0xF2, 0x01};
     uint8_t ctrl_meas[2] = {0xF4, 0x27};
 
+    // Diese Einstellungen werden an den Sensor geschickt
     i2c_master_transmit(dev, ctrl_hum, 2, 100);
     i2c_master_transmit(dev, ctrl_meas, 2, 100);
+
+    // Ab hier werden sogenannte "Kalibrierungsdaten" gelesen
+    // Diese sind im Sensor gespeichert und notwendig für genaue Messwerte
+
 
     uint8_t reg = 0x88;
     uint8_t data[26];
 
+    // Kalibrierungsdaten für Temperatur und Druck auslese
     i2c_master_transmit_receive(dev, &reg, 1, data, 26, 100);
 
+    // Die einzelnen Werte werden aus den Daten zusammengesetzt
     calib.dig_T1 = data[0] | (data[1] << 8);
     calib.dig_T2 = data[2] | (data[3] << 8);
     calib.dig_T3 = data[4] | (data[5] << 8);
@@ -344,13 +378,16 @@ void bme_init()
     calib.dig_P8 = data[20] | (data[21] << 8);
     calib.dig_P9 = data[22] | (data[23] << 8);
 
+    // Ein zusätzlicher Wert für die Luftfeuchtigkeit
     calib.dig_H1 = data[25];
 
+     // Weitere Kalibrierungsdaten für die Luftfeuchtigkeit
     reg = 0xE1;
     uint8_t hdata[7];
 
     i2c_master_transmit_receive(dev, &reg, 1, hdata, 7, 100);
 
+    // Auch diese Werte werden zusammengesetzt
     calib.dig_H2 = hdata[0] | (hdata[1] << 8);
     calib.dig_H3 = hdata[2];
     calib.dig_H4 = (hdata[3] << 4) | (hdata[4] & 0x0F);
@@ -429,78 +466,103 @@ void bme_read(float *t, float *p, float *h)
 
 void app_main()
 {
+    // Initialisiert den internen Speicher des ESP32
     ESP_ERROR_CHECK(nvs_flash_init());
 
-    wifi_init();
-    mqtt_start();
-    time_init();
+    
+    wifi_init();    // Startet die WLAN-Verbindung
+    mqtt_start();   // Baut Verbindung zum MQTT-Broker (Raspberry Pi) auf
+    time_init();    // Synchronisiert die Uhrzeit über das Internet
 
-    i2c_init();
-    wind_init();
+    i2c_init();     // Initialisiert die I²C-Verbindung (für den BME280 Sensor)
+    wind_init();    // Initialisiert den Windsensor (ADC)
 
-    vTaskDelay(pdMS_TO_TICKS(200));
+    vTaskDelay(pdMS_TO_TICKS(200));  // Kurze Wartezeit, damit alle Systeme stabil starten können
 
+    // Startet den BME280 Sensor
     bme_init();
 
+    // ================= REGENSENSOR SETUP =================
+
     gpio_config_t io_conf = {
-        .pin_bit_mask = (1ULL << RAIN_GPIO),
-        .mode = GPIO_MODE_INPUT,
-        .pull_up_en = GPIO_PULLUP_ENABLE,
-        .intr_type = GPIO_INTR_NEGEDGE
+        .pin_bit_mask = (1ULL << RAIN_GPIO),   // verwendet den definierten GPIO-Pin
+        .mode = GPIO_MODE_INPUT,               // Pin als Eingang
+        .pull_up_en = GPIO_PULLUP_ENABLE,      // interner Pull-Up Widerstand
+        .intr_type = GPIO_INTR_NEGEDGE         // Interrupt bei fallender Flanke
     };
 
-    gpio_config(&io_conf);
+    gpio_config(&io_conf); // Übernimmt die Einstellungen für den GPIO-Pin
 
-    gpio_install_isr_service(0);
-    gpio_isr_handler_add(RAIN_GPIO, rain_isr, NULL);
+    gpio_install_isr_service(0); // Aktiviert Interrupt-System
+    gpio_isr_handler_add(RAIN_GPIO, rain_isr, NULL); // Verknüpft den Regensensor mit der Interrupt-Funktion
+
+    // ================= HAUPTSCHLEIFE =================
 
     while (1)
     {
+        // Prüft, ob MQTT noch verbunden ist (Reconnect falls nötig)
         mqtt_check_reconnect();
 
         float t = 0, p = 0, h = 0;
         float wind_speed = 0.0f;
 
+        // Sensorwerte auslesen (Temperatur, Druck, Luftfeuchtigkeit)
         bme_read(&t, &p, &h);
+
+        // Windgeschwindigkeit berechnen
         wind_speed = read_wind_speed();
 
-        float rain_l_m2 = rain_counter * RAIN_MM_PER_TIP;   /* 1 mm = 1 l/m² */
+        // Regenmenge berechnen
+        // Jeder Impuls entspricht einer bestimmten Regenmenge
+        float rain_l_m2 = rain_counter * RAIN_MM_PER_TIP;   // 1 mm = 1 l/m²
 
+        // Prüfen, ob es aktuell regnet
         bool raining = false;
 
         if (last_interrupt_time != 0)
         {
+            // Wenn in letzter Zeit ein Impuls kam → es regnet
             if ((esp_timer_get_time() - last_interrupt_time) < 300000000)
                 raining = true;
         }
 
+        // Ausgabe aller Werte im Terminal (Debug / Kontrolle)
         ESP_LOGI(TAG,
         "Temp %.2f °C | Druck %.2f hPa | Feuchte %.2f %% | Regen %.2f l/m² (%s) | Wind %.2f m/s",
         t, p, h, rain_l_m2, raining ? "JA" : "NEIN", wind_speed);
 
+        // ================= MQTT DATEN SENDEN =================
+
+        // Nur senden, wenn Verbindung aktiv ist
         if (client != NULL && mqtt_connected)
         {
             char msg[32];
 
+            // Temperatur senden
             snprintf(msg, sizeof(msg), "%.2f", t);
             esp_mqtt_client_publish(client, TOPIC_TEMP, msg, 0, 1, 0);
 
+            // Luftdruck senden
             snprintf(msg, sizeof(msg), "%.2f", p);
             esp_mqtt_client_publish(client, TOPIC_PRESS, msg, 0, 1, 0);
 
+            // Luftfeuchtigkeit senden
             snprintf(msg, sizeof(msg), "%.2f", h);
             esp_mqtt_client_publish(client, TOPIC_HUM, msg, 0, 1, 0);
 
+            // Regenmenge senden
             snprintf(msg, sizeof(msg), "%.2f", rain_l_m2);
             esp_mqtt_client_publish(client, TOPIC_RAIN, msg, 0, 1, 0);
 
+            // Windgeschwindigkeit senden
             snprintf(msg, sizeof(msg), "%.2f", wind_speed);
             esp_mqtt_client_publish(client, TOPIC_WIND, msg, 0, 1, 0);
-        
-            esp_mqtt_client_publish(client, TOPIC_STATUS, "Ein", 0, 1, 1);
 
+            // Systemstatus senden (Gerät ist online)
+            esp_mqtt_client_publish(client, TOPIC_STATUS, "Ein", 0, 1, 1);
         }
 
+        // 5 Sekunden warten bis zur nächsten Messung
         vTaskDelay(pdMS_TO_TICKS(5000));
     }
 }
