@@ -333,10 +333,13 @@ float read_wind_speed()
      // (je höher die Spannung, desto stärker der Wind)
     float wind_speed = (v_sensor / WIND_MAX_VOLTAGE) * WIND_MAX_SPEED;
 
+    // Umrechnung von m/s → km/h
+    wind_speed = wind_speed * 3.6f;
+
     // Sicherheitscheck (keine negativen Werte)
     if (wind_speed < 0.0f) wind_speed = 0.0f;
 
-    // Ergebnis zurückgeben (in m/s)
+    // Ergebnis zurückgeben (in km/h)
     return wind_speed;
 }
 
@@ -534,7 +537,7 @@ void app_main()
 
         // Ausgabe aller Werte im Terminal (Debug / Kontrolle)
         ESP_LOGI(TAG,
-        "Temp %.2f °C | Druck %.2f hPa | Feuchte %.2f %% | Regen %.2f l/m² (%s) | Wind %.2f m/s | Status %s",
+        "Temp %.2f °C | Druck %.2f hPa | Feuchte %.2f %% | Regen %.2f l/m² (%s) | Wind %.2f km/h | Status %s",
         t, p, h, rain_l_m2, raining ? "JA" : "NEIN", wind_speed, status);
 
 
