@@ -1,53 +1,128 @@
-| Supported Targets | ESP32 | ESP32-C2 | ESP32-C3 | ESP32-C5 | ESP32-C6 | ESP32-C61 | ESP32-H2 | ESP32-H21 | ESP32-H4 | ESP32-P4 | ESP32-S2 | ESP32-S3 | Linux |
-| ----------------- | ----- | -------- | -------- | -------- | -------- | --------- | -------- | --------- | -------- | -------- | -------- | -------- | ----- |
+# 🌦️ ESP32 Wetterstation (MQTT)
 
-# Hello World Example
+Dieses Projekt ist eine Wetterstation basierend auf einem ESP32.
+Die gemessenen Umweltdaten werden erfasst und per MQTT an einen Broker (z. B. Raspberry Pi mit Mosquitto) gesendet.
 
-Starts a FreeRTOS task to print "Hello World".
+---
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
+## 🚀 Features
 
-## How to use example
+* 🌡️ Temperatur (BME280)
+* 💧 Luftfeuchtigkeit (BME280)
+* 🌬️ Luftdruck (BME280, auf Meereshöhe korrigiert)
+* 🌧️ Regenmessung über Kippwaage (Interrupt)
+* 💨 Windgeschwindigkeit über ADC (analoger Windsensor)
+* 📡 MQTT-Übertragung
+* 🖥️ Serielle Debug-Ausgabe
+* 🔄 MQTT Reconnect + Last-Will
 
-Follow detailed instructions provided specifically for this example.
+---
 
-Select the instructions depending on Espressif chip installed on your development board:
+## 🛠️ Verwendete Hardware
 
-- [ESP32 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/stable/get-started/index.html)
-- [ESP32-S2 Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/get-started/index.html)
+* ESP32
+* BME280 (I²C, Adresse 0x76)
+* Regensensor (Kippimpuls)
+* Windsensor (Analog, Spannungsausgang)
 
+---
 
-## Example folder contents
+## 🔌 Pinbelegung
 
-The project **hello_world** contains one source file in C language [hello_world_main.c](main/hello_world_main.c). The file is located in folder [main](main).
+| Funktion    | GPIO   |
+| ----------- | ------ |
+| I2C SDA     | GPIO4  |
+| I2C SCL     | GPIO5  |
+| Regensensor | GPIO27 |
+| Windsensor  | GPIO2  |
 
-ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt` files that provide set of directives and instructions describing the project's source files and targets (executable, library, or both).
+---
 
-Below is short explanation of remaining files in the project folder.
+## ⚙️ Wichtige Parameter (aus dem Code)
+
+| Parameter               | Wert      |
+| ----------------------- | --------- |
+| I2C Adresse             | 0x76      |
+| I2C Takt                | 100 kHz   |
+| Höhe (für Druck)        | 373 m     |
+| Regen pro Impuls        | 0.2794 mm |
+| Max Windspannung        | 3.8 V     |
+| Max Windgeschwindigkeit | 32.4 m/s  |
+
+---
+
+## ⚙️ Software / Voraussetzungen
+
+* ESP-IDF (v5.x empfohlen)
+* CMake
+* Python
+
+---
+
+## 🔌 Installation & Flashen
+
+```bash
+idf.py build
+idf.py flash
+idf.py monitor
+```
+
+---
+
+## 🔧 Konfiguration
+
+⚠️ Aktuell sind WLAN und MQTT **fest im Code definiert**.
+
+```c
+#define WIFI_SSID "ArduinoWiFi"
+#define WIFI_PASS "2-bszam!"
+#define MQTT_BROKER "mqtt://172.16.8.13"
+```
+
+👉 Für ein sauberes Projekt sollte das später in eine `config.h` ausgelagert werden.
+
+---
+
+## 📡 MQTT Topics
+
+| Messwert   | Topic                                   |
+| ---------- | --------------------------------------- |
+| Temperatur | BSZAM/Wetterstation/Temperatur          |
+| Luftdruck  | BSZAM/Wetterstation/Luftdruck           |
+| Feuchte    | BSZAM/Wetterstation/Luftfeuchtigkeit    |
+| Regen      | BSZAM/Wetterstation/Regen               |
+| Wind       | BSZAM/Wetterstation/Windgeschwindigkeit |
+| Status     | BSZAM/Wetterstation/Systemstatus        |
+
+---
+
+## 📟 Beispiel Ausgabe
 
 ```
-├── CMakeLists.txt
-├── pytest_hello_world.py      Python script used for automated testing
-├── main
-│   ├── CMakeLists.txt
-│   └── hello_world_main.c
-└── README.md                  This is the file you are currently reading
+Temp 22.50 °C | Druck 1013.20 hPa | Feuchte 45.00 % | Regen 0.00 l/m² (NEIN) | Wind 3.20 km/h | Status Ein
 ```
 
-For more information on structure and contents of ESP-IDF projects, please refer to Section [Build System](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/build-system.html) of the ESP-IDF Programming Guide.
+---
 
-## Troubleshooting
+## ⚠️ Hinweise
 
-* Program upload failure
+* ESP32 und MQTT-Broker müssen im selben Netzwerk sein
+* MQTT läuft typischerweise auf einem Raspberry Pi (Mosquitto)
+* Windsensor nutzt ADC (max. 3.3 V beachten!)
+* Regensensor nutzt Interrupt mit Entprellung (50 ms)
 
-    * Hardware connection is not correct: run `idf.py -p PORT monitor`, and reboot your board to see if there are any output logs.
-    * The baud rate for downloading is too high: lower your baud rate in the `menuconfig` menu, and try again.
+---
 
-## Technical support and feedback
+## 📌 TODO
 
-Please use the following feedback channels:
+* [ ] WLAN & MQTT in config.h auslagern
+* [ ] Schaltplan hinzufügen
+* [ ] Kalibrierung Windsensor verbessern
+* [ ] Deep Sleep / Energiesparen
+* [ ] Fehlerhandling erweitern
 
-* For technical queries, go to the [esp32.com](https://esp32.com/) forum
-* For a feature request or bug report, create a [GitHub issue](https://github.com/espressif/esp-idf/issues)
+---
 
-We will get back to you as soon as possible.
+## 📄 Lizenz
+
+Freie Nutzung für private und nicht-kommerzielle Projekte.
