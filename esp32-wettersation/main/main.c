@@ -1,3 +1,5 @@
+//*Systemvoraussetzungen in README.md hinterlegt*//
+
 // ================= BIBLIOTHEKEN =================
 
 // Standardbibliotheken für Berechnungen und Datentypen
