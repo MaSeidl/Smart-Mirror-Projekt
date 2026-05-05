@@ -24,7 +24,7 @@ Eine Wetterstation erfasst Umgebungsdaten und überträgt diese per MQTT an eine
 ### Voraussetzungen
 - ESP-IDF installiert
 - Python
-- WLAN Netzwerk
+- WLAN Netzwerk (ArduinoWiFi)
 
 ### Schritte
 ```bash
