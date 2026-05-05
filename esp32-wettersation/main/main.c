@@ -51,7 +51,7 @@
 #define RAIN_MM_PER_TIP 0.2794f
 
 // Höhe über Meeresspiegel für Luftdruckkorrektur
-#define ALTITUDE 380.0
+#define ALTITUDE 373.0
 
 /* ===== Windsensor ===== */
 #define WIND_GPIO GPIO_NUM_2
