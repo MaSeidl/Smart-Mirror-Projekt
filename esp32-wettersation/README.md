@@ -53,7 +53,7 @@ Die gemessenen Umweltdaten werden erfasst und per MQTT an einen Broker (z. B. Ra
 
 ## ⚙️ Software / Voraussetzungen
 
-* ESP-IDF (v5.x empfohlen)
+* ESP-IDF (v5.5.2 empfohlen)
 * CMake
 * Python
 
