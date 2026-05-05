@@ -529,10 +529,14 @@ void app_main()
                 raining = true;
         }
 
+        // MQTT-Status Anzeige
+        const char* status = mqtt_connected ? "Ein" : "Aus";
+
         // Ausgabe aller Werte im Terminal (Debug / Kontrolle)
         ESP_LOGI(TAG,
-        "Temp %.2f °C | Druck %.2f hPa | Feuchte %.2f %% | Regen %.2f l/m² (%s) | Wind %.2f m/s",
-        t, p, h, rain_l_m2, raining ? "JA" : "NEIN", wind_speed);
+        "Temp %.2f °C | Druck %.2f hPa | Feuchte %.2f %% | Regen %.2f l/m² (%s) | Wind %.2f m/s | Status %s",
+        t, p, h, rain_l_m2, raining ? "JA" : "NEIN", wind_speed, status);
+
 
         // ================= MQTT DATEN SENDEN =================
 
