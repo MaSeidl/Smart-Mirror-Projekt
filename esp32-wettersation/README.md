@@ -46,7 +46,7 @@ Die gemessenen Umweltdaten werden erfasst und per MQTT an einen Broker (z. B. Ra
 | I2C Takt                | 100 kHz   |
 | Höhe (für Druck)        | 373 m     |
 | Regen pro Impuls        | 0.2794 mm |
-| Max Windspannung        | 3.8 V     |
+| Max Windspannung        | 3.3 V     |
 | Max Windgeschwindigkeit | 32.4 m/s  |
 
 ---
