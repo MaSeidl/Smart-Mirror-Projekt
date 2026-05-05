@@ -532,7 +532,7 @@ void app_main()
                 raining = true;
         }
 
-        // MQTT-Status Anzeige
+        // MQTT-Status Anzeige (Terminal)
         const char* status = mqtt_connected ? "Ein" : "Aus";
 
         // Ausgabe aller Werte im Terminal (Debug / Kontrolle)
