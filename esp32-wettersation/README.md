@@ -71,12 +71,17 @@ idf.py monitor
 
 ## 🔧 Konfiguration
 
+//ESP32-C5 5Ghz fähig
+ESP IP-Adresse: 10.120.39.202
+ESP MAC-Adresse: 3C:DC:75:84:93:E8
+
+
 ⚠️ Aktuell sind WLAN und MQTT **fest im Code definiert**.
 
 ```c
-#define WIFI_SSID "ArduinoWiFi"
-#define WIFI_PASS "2-bszam!"
-#define MQTT_BROKER "mqtt://172.16.8.13"
+#define WIFI_SSID "C-PSK"
+#define WIFI_PASS "amLDLkzm!"
+#define MQTT_BROKER "mqtt://10.120.40.200"
 ```
 
 👉 Für ein sauberes Projekt sollte das später in eine `config.h` ausgelagert werden.

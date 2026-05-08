@@ -1,5 +1,3 @@
-//*Systemvoraussetzungen in README.md hinterlegt*//
-
 // ================= BIBLIOTHEKEN =================
 
 // Standardbibliotheken für Berechnungen und Datentypen
@@ -21,24 +19,26 @@
 #include "esp_netif.h"
 #include "nvs_flash.h"
 
+
 // MQTT Kommunikation
 #include "mqtt_client.h"
 
-// Hardware-Treiber
+// Hardware-Treiber 
 #include "driver/i2c_master.h"
 #include "driver/gpio.h"
 #include "esp_timer.h"
 #include "esp_sntp.h"
 #include "esp_adc/adc_oneshot.h"
+#include "esp_mac.h"
 
 // ================= KONFIGURATION =================
 
 // WLAN Zugangsdaten
-#define WIFI_SSID "ArduinoWiFi"
-#define WIFI_PASS "2-bszam!"
+#define WIFI_SSID "C-PSK"
+#define WIFI_PASS "amLDLkzm!"
 
 // MQTT Broker (Raspberry Pi)
-#define MQTT_BROKER "mqtt://172.16.8.13"
+#define MQTT_BROKER "mqtt://10.120.40.200"
 
 // I²C Pins für Sensor
 #define SDA_PIN 4
@@ -176,13 +176,28 @@ static void IRAM_ATTR rain_isr(void* arg)
 }
 
 // ================= WLAN =================
+void print_network_info();  // 👈 FUNKTIONS-DEKLARATION
 
+static void wifi_event_handler(void* arg, esp_event_base_t event_base,
+                              int32_t event_id, void* event_data)
+{
+    if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP)
+    {
+        ESP_LOGI(TAG, "WLAN verbunden → IP erhalten");
+        print_network_info();  // ✅ HIER richtig
+    }
+}
 void wifi_init()
 {
+    
     ESP_LOGI(TAG, "Starte WLAN Verbindung...");
 
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
+    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT,
+                                           IP_EVENT_STA_GOT_IP,
+                                           &wifi_event_handler,
+                                           NULL));
     esp_netif_create_default_wifi_sta();
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
@@ -195,10 +210,31 @@ void wifi_init()
         }
     };
 
-    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA)); // Client-Modus
+    ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
-    ESP_ERROR_CHECK(esp_wifi_start()); // WLAN starten
-    ESP_ERROR_CHECK(esp_wifi_connect()); // verbinden
+    ESP_ERROR_CHECK(esp_wifi_start());
+    ESP_ERROR_CHECK(esp_wifi_connect());
+}
+void print_network_info()
+{
+    esp_netif_ip_info_t ip_info;
+    esp_netif_t *netif = esp_netif_get_handle_from_ifkey("WIFI_STA_DEF");
+
+    if (netif != NULL && esp_netif_get_ip_info(netif, &ip_info) == ESP_OK)
+    {
+        ESP_LOGI(TAG, "IP-Adresse: " IPSTR, IP2STR(&ip_info.ip));
+    }
+    else
+    {
+        ESP_LOGE(TAG, "Konnte IP-Adresse nicht lesen");
+    }
+
+    uint8_t mac[6];
+    esp_read_mac(mac, ESP_MAC_WIFI_STA);
+
+    ESP_LOGI(TAG, "MAC-Adresse: %02X:%02X:%02X:%02X:%02X:%02X",
+             mac[0], mac[1], mac[2],
+             mac[3], mac[4], mac[5]);
 }
 
 /* ================= MQTT ================= */
@@ -478,8 +514,9 @@ void app_main()
     ESP_ERROR_CHECK(nvs_flash_init());
 
     
-    wifi_init();    // Startet die WLAN-Verbindung
-    mqtt_start();   // Baut Verbindung zum MQTT-Broker (Raspberry Pi) auf
+    wifi_init(); //Startet die WLAN Verbindung
+
+    mqtt_start();
     time_init();    // Synchronisiert die Uhrzeit über das Internet
 
     i2c_init();     // Initialisiert die I²C-Verbindung (für den BME280 Sensor)
@@ -534,7 +571,7 @@ void app_main()
                 raining = true;
         }
 
-        // MQTT-Status Anzeige (Terminal)
+        // MQTT-Status Anzeige
         const char* status = mqtt_connected ? "Ein" : "Aus";
 
         // Ausgabe aller Werte im Terminal (Debug / Kontrolle)
