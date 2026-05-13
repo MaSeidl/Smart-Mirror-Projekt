@@ -79,7 +79,7 @@ ESP MAC-Adresse: 3C:DC:75:84:93:E8
 ⚠️ Aktuell sind WLAN und MQTT **fest im Code definiert**.
 
 ```c
-#define WIFI_SSID "C-PSK"
+#define WIFI_SSID "E-PSK"
 #define WIFI_PASS "amLDLkzm!"
 #define MQTT_BROKER "mqtt://10.120.40.200"
 ```

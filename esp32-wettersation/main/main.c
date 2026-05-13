@@ -34,7 +34,7 @@
 // ================= KONFIGURATION =================
 
 // WLAN Zugangsdaten
-#define WIFI_SSID "C-PSK"
+#define WIFI_SSID "E-PSK"
 #define WIFI_PASS "amLDLkzm!"
 
 // MQTT Broker (Raspberry Pi)
